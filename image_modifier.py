@@ -48,17 +48,108 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 
 
 def apply_modification(data: list[list[list[int]]], mod: str) -> list[list[list[int]]] | None:
-    pass
+    """
+    Calls the correct modification to modify the file
+    """
+
+    if mod == "vertical_flip":
+        return apply_vertical_flip(data)
+
+    elif mod == "horizontal_flip":
+        return apply_horizontal_flip(data)
+
+    elif mod == "horizontal_blur":
+        return apply_horizontal_blur(data)
+
+    elif mod == "remove_red":
+        return remove_color(data, 0)
+
+    elif mod == "remove_green":
+        return remove_color(data, 1)
+
+    elif mod == "remove_blue":
+        return remove_color(data, 2)
+
+    elif mod == "negative":
+        return compute_negative(data)
+
+    elif mod == "high_contrast":
+        return compute_high_contrast(data)
+
+    elif mod == "random_noise":
+        return compute_random_noise(data)
+
+    elif mod == "gray_scale":
+        return compute_gray_scale(data)
+
+    return None
 
 def write_image_data(data: list[list[list[int]]], filename: str) -> None:
-    pass
+    """
+    writes new data into an image file
+    """
+
+    height = len(data)
+    width = len(data[0])
+
+    with open(filename, "w") as file:
+        file.write("P3\n")
+        file.write(f"{width} {height}\n")
+        file.write("255\n")
+
+        for row in data:
+            for pixel in row:
+                file.write(f"{pixel[0]} {pixel[1]} {pixel[2]}")
+            file.write("\n")
 
 
 def apply_vertical_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
-    pass
+    """
+    Vertically flips the image
+    """
+
+    new_data = []
+
+    for row in data:
+        new_data.insert(0, [pixel[:] for pixel in row])
+
+    return new_data
 
 def apply_horizontal_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
-    pass
+    """
+    Horizontally flips the image
+    """
+
+    new_data = []
+
+    for row in data:
+        new_row = []
+
+        for pixel in row:
+            new_row.insert(0, pixel[:])
+
+        new_data.append(new_row)
+
+    return new_data
+
+def remove_color(data: list[list[list[int]]], color_index: int) -> list[list[list[int]]]:
+    """
+    Gets rid of one RGB color from every pixel
+    """
+
+    new_data = []
+
+    for row in data:
+        new_row = []
+
+        for pixel in row:
+            new_pixel = pixel[:]
+            new_pixel[color_index] = 0
+            new_row.append(new_pixel)
+
+        new_data.append(new_row)
+
+    return new_data
 
 def apply_horizontal_blur(data: list[list[list[int]]]) -> list[list[list[int]]]:
     pass
@@ -73,7 +164,7 @@ def compute_high_contrast(val: int) -> int:
 def compute_random_noise(val: int) -> int:
     pass
 
-def compute_pixel_gray_scale(pixel: list[int]) -> list[int]:
+def compute_gray_scale(pixel: list[int]) -> list[int]:
     pass
 
 
