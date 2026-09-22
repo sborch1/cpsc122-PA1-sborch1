@@ -22,9 +22,12 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 
         value_types = []
 
-        # Reads the file and ignores comments and blank lines
+        # Reads the file
         while len(value_types) < 3:
-            file.readlines().strip()
+            line = file.readline().strip()
+
+            if line != "" and not line.startswith("#"):
+                value_types.append(line)
 
         if value_types[0] != "P3":
             print("Error: Invalid File Type")
@@ -32,8 +35,8 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 
         # Grabs value types from second line in header
         dimensions = value_types[1].split()
-        width = int(dimensions[1])
-        height = int(dimensions[2])
+        width = int(dimensions[0])
+        height = int(dimensions[1])
 
         # Grabs maximum RGB value
         color = int(value_types[2])
@@ -41,6 +44,14 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
         pixel_3d = []
 
         values_RGB = []
+
+        # Reads rest of file for rest of values
+        for line in file:
+            if not line.strip().startswith("#"):
+                values = line.split()
+
+                for value in values:
+                    values_RGB.append(int(value))
 
         # Convert rest of values to 3D list
         index = 0
@@ -77,26 +88,20 @@ def apply_modification(data: list[list[list[int]]], mod: str) -> list[list[list[
     elif mod == "horizontal_blur":
         return apply_horizontal_blur(data)
 
-    elif mod == "remove_red":
-        return remove_color(data, 0)
-
-    elif mod == "remove_green":
-        return remove_color(data, 1)
-
     elif mod == "remove_blue":
         return remove_color(data, 2)
 
     elif mod == "negative":
-        return compute_negative(data)
+        return apply_negative(data)
 
     elif mod == "high_contrast":
-        return compute_high_contrast(data)
+        return apply_high_contrast(data)
 
     elif mod == "random_noise":
-        return compute_random_noise(data)
+        return apply_random_noise(data)
 
     elif mod == "gray_scale":
-        return compute_pixel_gray_scale(data)
+        return apply_pixel_gray_scale(data)
 
     return None
 
@@ -115,7 +120,7 @@ def write_image_data(data: list[list[list[int]]], filename: str) -> None:
 
         for row in data:
             for pixel in row:
-                file.write(f"{pixel[0]} {pixel[1]} {pixel[2]}")
+                file.write(f"{pixel[0]} {pixel[1]} {pixel[2]} ")
             file.write("\n")
 
 
@@ -277,7 +282,7 @@ def apply_pixel_gray_scale(data: list[list[list[int]]]) -> list[list[list[int]]]
         new_row = []
     
         for pixel in row:
-            new_row.append(compute_pixel_gray_scale[pixel])
+            new_row.append(compute_pixel_gray_scale(pixel))
     
         new_data.append(new_row)
     
@@ -331,7 +336,7 @@ def main():
     else:
         base_file = file
 
-    modifications = ["vertical_flip", "horizontal_flip", "remove_green", "negative",
+    modifications = ["vertical_flip", "horizontal_flip", "remove_blue", "negative",
         "high_contrast", "random_noise", "gray_scale", "horizontal_blur"]
 
     for mod in modifications:
