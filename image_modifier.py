@@ -17,6 +17,12 @@ import random
 def load_image_data(filename: str) -> list[list[list[int]]]:
     """
     Opens an image and a 3D list of RGB values
+
+    Args: 
+        filename (str): the input file to be modified
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has each pixel's RGB values in the image
     """
     with open(filename, "r") as file:
 
@@ -61,8 +67,8 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 
             for column in range(width):
                 red = values_RGB[index]
-                blue = values_RGB[index + 1]
-                green = values_RGB[index + 2]
+                green = values_RGB[index + 1]
+                blue = values_RGB[index + 2]
 
                 pixel = [red, green, blue]
                 row_pixel.append(pixel)
@@ -77,6 +83,14 @@ def load_image_data(filename: str) -> list[list[list[int]]]:
 def apply_modification(data: list[list[list[int]]], mod: str) -> list[list[list[int]]] | None:
     """
     Calls the correct image modification to modify the file
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+        mod (str): the name of the modification to add to the image as a string
+    Returns:
+        list[list[list[int]]] | None: the 3d list that has new modified image data,
+        or returns none if the modification is invalid or not supported
     """
 
     if mod == "vertical_flip":
@@ -108,6 +122,15 @@ def apply_modification(data: list[list[list[int]]], mod: str) -> list[list[list[
 def write_image_data(data: list[list[list[int]]], filename: str) -> None:
     """
     writes new data into an image file
+
+    Args: 
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+        filename (str): the name of the file to create or write over as a string
+
+    Returns:
+        None: does not return a value
+
     """
 
     height = len(data)
@@ -127,6 +150,13 @@ def write_image_data(data: list[list[list[int]]], filename: str) -> None:
 def apply_vertical_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Vertically flips the image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has the vertically flipped image
     """
 
     new_data = []
@@ -139,6 +169,13 @@ def apply_vertical_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
 def apply_horizontal_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Horizontally flips the image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+        
+    Returns:
+        list[list[list[int]]]: the 3d list that has the horizontally flipped image
     """
 
     new_data = []
@@ -156,6 +193,14 @@ def apply_horizontal_flip(data: list[list[list[int]]]) -> list[list[list[int]]]:
 def remove_color(data: list[list[list[int]]], color_index: int) -> list[list[list[int]]]:
     """
     Gets rid of one RGB color from every pixel
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+        color_index (int): the RGB color index to remove, 0 is red, 1 is green, 2 is blue
+    
+    Returns:
+        list[list[list[int]]]: the 3d list that has the chosen color set to zero
     """
 
     new_data = []
@@ -175,12 +220,26 @@ def remove_color(data: list[list[list[int]]], color_index: int) -> list[list[lis
 def compute_negative(val: int) -> int:
     """
     Calculates the negative of a given RGB value
+
+    Args:
+        val (int): RGB color value between 0 and 255
+
+    Returns:
+        int: the negative value that was calculated from subtracting the original 
+        value from 255
     """
     return abs(255 - val)
 
 def apply_negative(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Applies the negative of a given RGB value found from the above function to an image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has the negative version of the image
     """
     new_data = []
 
@@ -201,6 +260,13 @@ def apply_negative(data: list[list[list[int]]]) -> list[list[list[int]]]:
 def compute_high_contrast(val: int) -> int:
     """
     Calculates the maximum or minimum value for a RGB value (0 or 255)
+
+    Args:
+        val (int): RGB color value between 0 and 255
+
+    Returns:
+        int: 0 if val is less than or equal to 127 and returns 255 if val is greater 
+        than 127
     """
 
     if val <= 127:
@@ -211,6 +277,14 @@ def compute_high_contrast(val: int) -> int:
 def apply_high_contrast(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Applies high contrast calculated from the above function to the image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has the high contrast version of 
+        the image
     """
 
     new_data = []
@@ -231,6 +305,13 @@ def apply_high_contrast(data: list[list[list[int]]]) -> list[list[list[int]]]:
 def compute_random_noise(val: int) -> int:
     """
     Inputs random noise into the image between RGB values -50 and 50
+
+    Args:
+        val (int): RGB color value between 0 and 255
+
+    Returns:
+        int: Modified RGB value after adding a random value between -50 and 50,
+        but limited to the range of 0 to 255
     """
 
     new_value = val + random.randint(-50, 50)
@@ -245,6 +326,14 @@ def compute_random_noise(val: int) -> int:
 def apply_random_noise(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Applies a random amount of noise to the image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB values 
+        in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has random noise added to each 
+        RGB value of the image
     """
 
     new_data = []
@@ -264,7 +353,13 @@ def apply_random_noise(data: list[list[list[int]]]) -> list[list[list[int]]]:
 
 def compute_pixel_gray_scale(pixel: list[int]) -> list[int]:
     """
-    Calcultes the gray scale for the image
+    Calculates the gray scale for the image
+
+    Args:
+        pixel (list[int]): A list that has the RGB values of a single pixel.
+
+    Returns:
+        list[int]: A new pixel that has the average RGB value in all three indices.
     """
 
     avg = (pixel[0] + pixel[1] + pixel[2]) // 3
@@ -274,6 +369,14 @@ def compute_pixel_gray_scale(pixel: list[int]) -> list[int]:
 def apply_pixel_gray_scale(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Applies the calculated gray sacle from the above function to the image
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB 
+        values in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has the gray scale version of 
+        the image
     """
 
     new_data = []
@@ -291,6 +394,14 @@ def apply_pixel_gray_scale(data: list[list[list[int]]]) -> list[list[list[int]]]
 def apply_horizontal_blur(data: list[list[list[int]]]) -> list[list[list[int]]]:
     """
     Applies a horizontal blur to the image by using values of neighboring pixels
+
+    Args:
+        data (list[list[list[int]]]): the 3d list that has each pixel's RGB 
+        values in the image
+
+    Returns:
+        list[list[list[int]]]: the 3d list that has the horizontally blurred 
+        version of the image   
     """
 
     height = len(data)
@@ -316,7 +427,7 @@ def apply_horizontal_blur(data: list[list[list[int]]]) -> list[list[list[int]]]:
                 green_total += data[row][current_col][1]
                 blue_total += data[row][current_col][2]
 
-            new_pixel = [red_total // count, green_total // count, blue_total, count]
+            new_pixel = [red_total // count, green_total // count, blue_total // count]
 
             new_row.append(new_pixel)
 
@@ -324,7 +435,20 @@ def apply_horizontal_blur(data: list[list[list[int]]]) -> list[list[list[int]]]:
 
     return new_data
 
-def main():
+def main() -> None:
+    """
+    Runs the image modifier program
+
+    The function asks the user for the name of an image file, loads the image 
+    from that name, applies each specified modification, and writes each 
+    modified image to a separate PPM file.
+    
+    Args:
+        None: this function does not accept arguments
+
+    Returns:
+        None: this function does not return a value
+    """
     file = input("Enter name of image file to modify: ")
     print(f"Processing {file}...")
     print()
